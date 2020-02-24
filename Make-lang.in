@@ -1,0 +1,106 @@
+# Make-lang.in -- Top level -*- makefile -*- fragment for gcc PREV frontend.
+
+# Copyright (C) 2009-2020 Free Software Foundation, Inc.
+
+# This file is part of GCC.
+
+# GCC is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+
+# GCC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with GCC; see the file COPYING3.  If not see
+# <http://www.gnu.org/licenses/>.
+
+# This file provides the language dependent support in the main Makefile.
+
+# Installation name.
+
+GCCPREV_INSTALL_NAME := $(shell echo gccprev|sed '$(program_transform_name)')
+GCCPREV_TARGET_INSTALL_NAME := $(target_noncanonical)-$(shell echo gccprev|sed '$(program_transform_name)')
+
+# The name for selecting prev in LANGUAGES.
+prev: prev1$(exeext)
+
+.PHONY: prev
+
+GCCPREV_OBJS = $(GCC_OBJS) prev/prevspec.o
+gccprev$(exeext): $(GCCPREV_OBJS) $(EXTRA_GCC_OBJS) libcommon-target.a $(LIBDEPS)
+	+$(LINKER) $(ALL_LINKERFLAGS) $(LDFLAGS) -o $@ \
+	  $(GCCPREV_OBJS) $(EXTRA_GCC_OBJS) libcommon-target.a \
+	  $(EXTRA_GCC_LIBS) $(LIBS)
+
+PREV_OBJS = \
+	prev/prev-lang.o
+
+prev_OBJS = $(PREV_OBJS)
+
+prev1$(exeext): $(prev_OBJS) attribs.o $(BACKEND) $(LIBDEPS)
+	+$(LLINKER) $(ALL_LINKERFLAGS) $(LDFLAGS) -o $@ \
+	      $(prev_OBJS) attribs.o $(BACKEND) $(LIBS) $(BACKENDLIBS)
+
+# Build hooks.
+
+prev.all.cross:
+prev.start.encap: gccprev$(exeext)
+prev.rest.encap:
+prev.info:
+prev.dvi:
+prev.pdf:
+prev.html:
+prev.srcinfo:
+prev.srcextra:
+prev.tags:
+prev.man:
+prev.srcman:
+
+selftest-prev:
+
+# Install hooks.
+
+prev.install-common: installdirs
+	-rm -f $(DESTDIR)$(bindir)/$(GCCPREV_INSTALL_NAME)$(exeext)
+	$(INSTALL_PROGRAM) gccprev$(exeext) $(DESTDIR)$(bindir)/$(GCCPREV_INSTALL_NAME)$(exeext)
+	-if test -f prev1$(exeext); then \
+	    rm -f $(DESTDIR)$(bindir)/$(GCCPREV_TARGET_INSTALL_NAME)$(exeext); \
+	    ( cd $(DESTDIR)$(bindir) && \
+	      $(LN) $(GCCPREV_INSTALL_NAME)$(exeext) $(GCCPREV_TARGET_INSTALL_NAME)$(exeext) ); \
+	fi
+
+prev.install-plugin:
+prev.install-info:
+prev.install-pdf:
+prev.install-html:
+prev.install-man:
+
+prev.uninstall:
+	rm -rf $(DESTDIR)$(bindir)/$(GCCPREV_INSTALL_NAME)$(exeext)
+	rm -rf $(DESTDIR)$(bindir)/$(GCCPREV_TARGET_INSTALL_NAME)$(exeext)
+
+# Clean hooks.
+
+prev.mostlyclean:
+prev.clean:
+prev.distclean:
+prev.maintainer-clean:
+
+# Stage hooks.
+
+prev.stage1: stage1-start
+	-mv prev/*$(objext) stage1/prev
+prev.stage2: stage2-start
+	-mv prev/*$(objext) stage2/prev
+prev.stage3: stage3-start
+	-mv prev/*$(objext) stage3/prev
+prev.stage4: stage4-start
+	-mv prev/*$(objext) stage4/prev
+prev.stageprofile: stageprofile-start
+	-mv prev/*$(objext) stageprofile/prev
+prv.stagefeedback: stagefeedback-start
+	-mv prev/*$(objext) stagefeedback/prev
