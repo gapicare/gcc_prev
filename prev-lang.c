@@ -1,5 +1,4 @@
 /* prev-lang.c -- PREV frontend gcc interface.
-   Copyright (C) 2009-2020 Free Software Foundation, Inc.
 
 This file is part of GCC.
 
@@ -33,6 +32,8 @@ along with GCC; see the file COPYING3.  If not see
 #include "langhooks.h"
 #include "langhooks-def.h"
 #include "common/common-target.h"
+
+#include "prev-c.h"
 
 /* Language-dependent contents of a type.  */
 
@@ -94,7 +95,7 @@ prev_langhook_init (void)
 static void
 prev_langhook_parse_file (void)
 {
-  fprintf(stderr, "This is PREV front end!\n");
+  prev_parse_input_files(in_fnames, num_in_fnames);
 }
 
 static tree
