@@ -37,7 +37,8 @@ gccprev$(exeext): $(GCCPREV_OBJS) $(EXTRA_GCC_OBJS) libcommon-target.a $(LIBDEPS
 PREV_OBJS = \
 	prev/prev-lang.o \
 	prev/prev.o \
-	prev/lex.o
+	prev/lex.o \
+	prev/parse.o
 
 prev_OBJS = $(PREV_OBJS)
 
