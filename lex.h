@@ -75,6 +75,9 @@ public:
 	Token_type
 	get_type();
 
+	location_t
+	get_location();
+
 	void
 	print(FILE *file);
 
@@ -82,6 +85,8 @@ private:
 	Token_type type_;
 	location_t location_;
 	std::string *lexeme_;
+
+	FILE *lex_out_;
 };
 
 /*
@@ -95,6 +100,14 @@ public:
 
 	Token*
 	next_token();
+
+	/* debugging */
+ 	void
+	open_lex_file();
+
+	void
+	close_lex_file();
+	/* debugging */
 
 private:
 
@@ -111,6 +124,8 @@ private:
 	int column_;
 	int prev_column_;
 	const struct line_map *line_map_;
+
+	FILE *lex_file_;
 };
 
 #endif // #ifndef PREV_LEX_H

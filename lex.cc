@@ -22,6 +22,13 @@ Token::get_type()
 	return this->type_;
 }
 
+// Get token location.
+location_t
+Token::get_location()
+{
+	return this->location_;
+}
+
 // For debugging.
 void
 Token::print(FILE *file)
@@ -208,7 +215,7 @@ Token::print(FILE *file)
 // Lex constructor.
 Lex::Lex(const char *filename, FILE *file)
 	: filename_(filename), file_(file), line_(1), column_(0),
-	  prev_column_(0), line_map_(0)
+	  prev_column_(0), line_map_(0), lex_file_(NULL)
 {
 	line_map_ = ::linemap_add(::line_table, ::LC_ENTER,
 							 /* sysp */ 0, filename_,
@@ -267,6 +274,7 @@ Lex::next_token ()
 	Token::Token_type type;
 	location_t location;
 	std::string lexeme;
+	Token *token;
 
 	// Ignore whitespace and comments.
 	while (1)
@@ -491,5 +499,23 @@ Lex::next_token ()
 		type = Token::TOKEN_INVALID;
 	}
 
-	return new Token(type, location, lexeme);
+	token = new Token(type, location, lexeme);
+
+	token->print(lex_file_);
+
+	return token;
+}
+
+void
+Lex::open_lex_file()
+{
+	lex_file_ = fopen("lex.out", "w");
+	if (lex_file_ == NULL)
+		fatal_error(UNKNOWN_LOCATION, "cannot open %s: %m", "lex.out");
+}
+
+void
+Lex::close_lex_file()
+{
+	fclose(lex_file_);
 }

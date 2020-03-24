@@ -28,6 +28,7 @@
 #define __STDC_FORMAT_MACROS
 
 #include <string>
+#include <vector>
 
 // We don't really need iostream, but some versions of gmp.h include
 // it when compiled with C++, which means that we need to include it

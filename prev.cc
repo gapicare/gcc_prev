@@ -5,6 +5,7 @@
 #include "prev-c.h"
 
 #include "lex.h"
+#include "parse.h"
 
 void
 prev_parse_input_files(const char** filenames, unsigned int filename_count)
@@ -22,21 +23,10 @@ prev_parse_input_files(const char** filenames, unsigned int filename_count)
 				fatal_error(UNKNOWN_LOCATION, "cannot open %s: %m", filename);
 		}
 
-		Lex lex(filename, file);
+		Lex lexer(filename, file);
 
-		FILE *lex_out = fopen("lex.out", "w");
-		if (lex_out == NULL)
-			fatal_error(UNKNOWN_LOCATION, "cannot open lex.out: %m");
-
-		Token *t = lex.next_token();
-		while (t->get_type() != Token::TOKEN_EOF)
-		{
-			t->print(lex_out);
-			t = lex.next_token();
-		}
-		t->print(lex_out);
-
-		fclose(lex_out);
+		Parse parse(&lexer);
+		parse.parse();
 
 		if (strcmp(filename, "-") != 0)
 			fclose(file);
